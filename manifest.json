@@ -1,0 +1,20 @@
+{
+  "name": "thirsty-lion",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "description": "thirsty-lion",
+  "short_name": "thirsty-lion",
+  "homepage_url": "https://github.com/larsborn/thirsty-lion",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "default_locale": "en",
+  "permissions": [
+    "storage",
+  ],
+  "content_scripts": [
+
+  ]
+}
