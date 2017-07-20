@@ -1,0 +1,12 @@
+{
+  "name": "thirsty-lion-chrome-extension",
+  "version": "1.0.0",
+  "description": "ThirstyLion Chrome Extension",
+  "main": "main.js",
+  "author": "lars@wallenborn.net",
+  "license": "DBAD License",
+  "dependencies": {
+    "firebase": "^4.1.3",
+    "webpack": "^3.3.0"
+  }
+}
