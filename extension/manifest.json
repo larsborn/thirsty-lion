@@ -1,9 +1,9 @@
 {
-  "name": "thirsty-lion",
-  "version": "1.0.0",
+  "name": "ThirstyLion",
+  "version": "1.0",
   "manifest_version": 2,
-  "description": "thirsty-lion",
-  "short_name": "thirsty-lion",
+  "description": "ThirstyLion SWC detector",
+  "short_name": "ThirstyLion",
   "homepage_url": "https://github.com/larsborn/thirsty-lion",
   "icons": {
     "16": "icons/icon16.png",
@@ -13,8 +13,12 @@
   "default_locale": "en",
   "permissions": [
     "storage",
+    "*://*/*"
   ],
   "content_scripts": [
-
+    {
+      "matches": ["*://*/*"],
+      "js": ["inject.js"]
+    }
   ]
 }
