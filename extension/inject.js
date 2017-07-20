@@ -27,14 +27,16 @@ function writeTask(url) {
 function listenToResult(key) {
   database.ref('results/' + key).on('value', (snapshot) => {
     let val = snapshot.val();
-    if (val) displayMessage(val.result.join(', '));
+    if (val) displayMessage('<ul>' + val.result.map(function (elem) {
+      return '<li>' + elem + '</li>';
+    }).join('') + '</ul>');
   });
 }
 
 function displayMessage(msg) {
   const div = document.createElement("div");
   div.className = 'thirsty-lion';
-  div.innerHTML = 'YARA-Matches: ' + msg;
+  div.innerHTML = '<h1>ThirstyLion Warning</h1>' + msg;
   document.getElementsByTagName('body')[0].appendChild(div);
 }
 
