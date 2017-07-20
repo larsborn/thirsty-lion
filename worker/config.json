@@ -1,0 +1,10 @@
+{
+  "firebase": {
+    "apiKey": "AIzaSyDNhtcP0dNpM3i2gTztWpNnUY5srnaj504",
+    "authDomain": "thirsty-lion.firebaseapp.com",
+    "databaseURL": "https://thirsty-lion.firebaseio.com",
+    "projectId": "thirsty-lion",
+    "storageBucket": "thirsty-lion.appspot.com",
+    "messagingSenderId": "944583212481"
+  }
+}
