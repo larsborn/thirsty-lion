@@ -8,16 +8,12 @@ const firebase = require('firebase');
 const config = require('./config.json');
 const axios = require('axios');
 
-
 const connection = firebase.initializeApp(config.firebase);
-
-console.log('start');
-
 
 setInterval(() => once(run), 1000);
 
 async function run() {
-  console.log('has new data?');
+  console.log('...');
 
   const task = await getNextTask();
 
@@ -31,12 +27,9 @@ async function run() {
 }
 
 async function yara(file) {
-  //const {stdout} = await exec('/home/larsborn/yara-3.4.0/yara /home/larsborn/yrules/main.yara ' + file);
+  console.log('analyze...');
 
-  const stdout = `
-angler /var/www/virtual/larsborn/backend/inject.js
-xml_http_request /var/www/virtual/larsborn/backend/inject.js
-  `;
+  const {stdout} = await exec(`${config.yara.bin} ${config.yara.rule} ${file}`);
 
   return stdout.split('\n').map(function (line) {
     const i = line.indexOf(' ');
@@ -62,15 +55,21 @@ async function getNextTask() {
 }
 
 async function writeResult(task, result) {
+  console.log('write result...');
+
   await connection.database().ref('results/' + task.id).set(result);
 }
 
 async function downloadFile(url) {
+  console.log('download: ' + url);
+
   const response = await axios.get(url);
   const data = response.data;
 
   const hash = crypto.createHash('sha256').update(data, 'utf8').digest('hex');
   const path = "/tmp/" + hash;
+
+  console.log('write: ' + path);
 
   fs.writeFileSync(path, data);
 
@@ -102,7 +101,7 @@ async function once(callback) {
   try {
     await callback();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
   this.running = false;
 }
