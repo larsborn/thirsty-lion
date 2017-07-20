@@ -1,36 +1,51 @@
 const firebase = require('firebase');
 const tldExtract = require('tld-extract');
 
-function init() {
-  const database = firebase.initializeApp(require('./creds.json')).database();
+const database = firebase.initializeApp(require('./creds.json')).database();
+const domain = tldExtract(location.href).domain;
 
-  const target = document.getElementsByTagName('head');
-  if (!target || !target[0]) {
-    return;
+function routeTag(tag) {
+  switch (tag.tagName.toLowerCase()) {
+    case 'script':
+      return processScriptTag(tag);
   }
+}
+
+function processScriptTag(scriptTag) {
+  const thisDomain = tldExtract(scriptTag.src).domain;
+  if (thisDomain === domain) return;
+  listenToResult(writeTask(scriptTag.src));
+}
+
+function writeTask(url) {
+  return database.ref('tasks').push({
+    url: url,
+    sentAt: (new Date()).toISOString()
+  }).key;
+}
+
+function listenToResult(key) {
+  database.ref('results/' + key).on('value', (snapshot) => {
+    let val = snapshot.val();
+    if (val) displayMessage(val.join(', '));
+  });
+}
+
+function displayMessage(msg) {
+  const div = document.createElement("div");
+  div.className = 'thirsty-lion';
+  div.innerHTML = 'YARA-Matches: ' + msg;
+  document.getElementsByTagName('body')[0].appendChild(div);
+}
+
+function init() {
+  const target = document.getElementsByTagName('head');
+  if (!target || !target[0]) return;
 
   const observer = new MutationObserver(function (mutations) {
-    const domain = tldExtract(location.href).domain;
     for (let i = 0; i < mutations.length; i++) {
       for (let j = 0; j < mutations[0].addedNodes.length; j++) {
-        let addedTag = mutations[0].addedNodes[j];
-        if (addedTag.tagName.toLowerCase() === 'script') {
-          const thisDomain = tldExtract(addedTag.src).domain;
-          if (thisDomain !== domain) {
-            const ref = database.ref('tasks').push({
-              url: addedTag.src,
-              sentAt: (new Date()).toISOString()
-            });
-            database.ref('results/' + ref.key).on('value', (snapshot) => {
-              let val = snapshot.val();
-              if (!val) return;
-              const div = document.createElement("div");
-              div.className = 'thirsty-lion';
-              div.innerHTML = 'YARA-Matches: ' + val.join(', ');
-              document.getElementsByTagName('body')[0].appendChild(div);
-            });
-          }
-        }
+        routeTag(mutations[0].addedNodes[j]);
       }
     }
   });
