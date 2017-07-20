@@ -18,6 +18,10 @@
   "content_scripts": [
     {
       "matches": ["*://*/*"],
+      "css": ["inject.css"]
+    },
+    {
+      "matches": ["*://*/*"],
       "js": ["inject.js"]
     }
   ]

@@ -7,6 +7,7 @@
   "license": "DBAD License",
   "dependencies": {
     "firebase": "^4.1.3",
+    "tld-extract": "^1.0.1",
     "webpack": "^3.3.0"
   }
 }
