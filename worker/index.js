@@ -23,21 +23,7 @@ async function run() {
 
   const file = await downloadFile(task.url);
   const result = await yara(file);
-  await writeResult(task, result);
-}
-
-async function yara(file) {
-  console.log('analyze...');
-
-  const {stdout} = await exec(`${config.yara.bin} ${config.yara.rule} ${file}`);
-
-  return stdout.split('\n').map(function (line) {
-    const i = line.indexOf(' ');
-    if (i === -1) return null;
-    return line.substr(0, i);
-  }).filter(function (elem) {
-    return elem
-  });
+  await writeResult(task, result, file);
 }
 
 async function getNextTask() {
@@ -54,12 +40,6 @@ async function getNextTask() {
   return task;
 }
 
-async function writeResult(task, result) {
-  console.log('write result...');
-
-  await connection.database().ref('results/' + task.id).set(result);
-}
-
 async function downloadFile(url) {
   console.log('download: ' + url);
 
@@ -74,6 +54,30 @@ async function downloadFile(url) {
   fs.writeFileSync(path, data);
 
   return path;
+}
+
+async function yara(file) {
+  console.log('analyze...');
+
+  const {stdout} = await exec(`${config.yara.bin} ${config.yara.rule} ${file}`);
+
+  return stdout.split('\n').map(function (line) {
+    const i = line.indexOf(' ');
+    if (i === -1) return null;
+    return line.substr(0, i);
+  }).filter(function (elem) {
+    return elem
+  });
+}
+
+async function writeResult(task, result, path) {
+  console.log('write result...');
+
+  await connection.database().ref('results/' + task.id).set({
+    result: result,
+    url: task.url,
+    path: path
+  });
 }
 
 function sha256() {

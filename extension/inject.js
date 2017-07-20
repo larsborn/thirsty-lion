@@ -27,7 +27,7 @@ function writeTask(url) {
 function listenToResult(key) {
   database.ref('results/' + key).on('value', (snapshot) => {
     let val = snapshot.val();
-    if (val) displayMessage(val.join(', '));
+    if (val) displayMessage(val.result.join(', '));
   });
 }
 
